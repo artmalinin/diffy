@@ -39,7 +39,7 @@ public class MulticastProxy {
                     liftResponse,
                     responsePicker
             ) -> (HttpRequest request) -> {
-                TransformationEdge routingMode = TransformationEdge.all;
+                TransformationEdge routingMode = request.getRoutingMode();
                 if (request.getBody() != null && request.getBody().contains("mutation"))
                     routingMode = TransformationEdge.primary;
                 switch (routingMode) {
