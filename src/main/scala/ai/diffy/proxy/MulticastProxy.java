@@ -6,6 +6,7 @@ import ai.diffy.functional.algebra.monoids.functions.SeptaOperator;
 import ai.diffy.functional.functions.Try;
 import ai.diffy.lifter.AnalysisRequest;
 import ai.diffy.lifter.Message;
+import ai.diffy.transformations.TransformationEdge;
 import ai.diffy.util.Future;
 import io.netty.handler.codec.http.EmptyHttpHeaders;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -38,7 +39,10 @@ public class MulticastProxy {
                     liftResponse,
                     responsePicker
             ) -> (HttpRequest request) -> {
-                switch (request.getRoutingMode()) {
+                TransformationEdge routingMode = TransformationEdge.all;
+                if (request.getBody() != null && request.getBody().contains("mutation"))
+                    routingMode = TransformationEdge.primary;
+                switch (routingMode) {
                     case primary : return primary.apply(request);
                     case secondary : return secondary.apply(request);
                     case candidate : return candidate.apply(request);
